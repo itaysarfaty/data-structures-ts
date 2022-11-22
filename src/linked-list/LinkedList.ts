@@ -12,35 +12,43 @@ export class LinkedList<T> {
     this.tail = null;
   }
 
+  // Check if empty Returns: Boolean
   public isEmpty() {
     return this.size === 0;
   }
 
+  // Create and add node to the tail
   public add(data: T) {
     const node = this.genNode(data);
     this.addTail(node);
   }
 
-  public addAt(data: T, index: number) {
+  // Create and add node at index
+  public insert(data: T, index: number) {
     this.validateIndex(index, 0, this.size);
-    const node = this.genNode(data);
+
+    const newNode = this.genNode(data);
 
     if (index === 0) {
-      this.addHead(node);
+      this.addHead(newNode);
       return;
     }
     if (index === this.size) {
-      this.addTail(node);
+      this.addTail(newNode);
       return;
     }
-    const [nodeA, nodeB] = this.getNodeSandwich(index);
-    nodeA!.next = node;
-    node.next = nodeB;
+
+    const [prev, node] = this.getNodeWithPrev(index);
+    prev.next = newNode;
+    newNode.next = node;
+
     this.size++;
   }
 
-  public removeAt(index: number) {
+  // Remove node at index
+  public remove(index: number) {
     this.validateIndex(index, 0, this.tailIndex);
+
     if (index === 0) {
       this.removeHead();
       return;
@@ -51,26 +59,31 @@ export class LinkedList<T> {
       return;
     }
 
-    const [prev, remove] = this.getNodeSandwich(index);
-    prev!.next = remove!.next;
+    const [prev, node] = this.getNodeWithPrev(index);
+    prev.next = node.next;
 
     this.size--;
   }
 
+  // Print out all nodes
   public toString() {
     if (this.isEmpty()) {
       return "Empty List";
     }
 
-    let node = this.head;
-    console.log(node!.data);
+    let returnString = "0:";
+    let node = this.head!;
+    returnString += `[${node.data}]`;
 
-    while (node?.next) {
-      node = node.next;
-      console.log(node.data);
+    for (let i = 1; i < this.size; i++) {
+      node = node.next!;
+      returnString += `  ${i}:[${node.data}]`;
     }
+
+    return returnString;
   }
 
+  // Add node to head
   private addHead(node: ListNode<T>) {
     if (this.isEmpty()) {
       this.addFirstNode(node);
@@ -80,7 +93,7 @@ export class LinkedList<T> {
     }
     this.size++;
   }
-
+  // Add node to tail
   private addTail(node: ListNode<T>) {
     if (this.isEmpty()) {
       this.addFirstNode(node);
@@ -91,6 +104,7 @@ export class LinkedList<T> {
     this.size++;
   }
 
+  // Remove node at head
   private removeHead() {
     this.throwOnEmpty();
 
@@ -104,30 +118,36 @@ export class LinkedList<T> {
     this.size--;
   }
 
+  // Remove node at tail
   private removeTail() {
     this.throwOnEmpty();
-    const [secondToLast, _] = this.getNodeSandwich(this.tailIndex);
-    secondToLast!.next = null;
-    this.tail = secondToLast;
+    const [prev, _] = this.getNodeWithPrev(this.tailIndex);
+    prev.next = null;
+    this.tail = prev;
 
     this.size--;
   }
 
-  private getNodeSandwich(index: number) {
+  // Return tuple with node at index and previous node
+  private getNodeWithPrev(index: number): [ListNode<T>, ListNode<T>] {
+    // Constraint from second element to last index
     this.validateIndex(index, 1, this.tailIndex);
 
-    let prevNode = this.head;
+    // Get node behind requested node
+    let node = this.head!;
     for (let i = 0; i < index - 1; i++) {
-      prevNode = prevNode!.next;
+      node = node.next!;
     }
 
-    return [prevNode, prevNode!.next];
+    return [node, node.next!];
   }
 
+  // Create a node from data
   private genNode(data: T): ListNode<T> {
     return { data, next: null };
   }
 
+  // Use to add a node when list is empty
   private addFirstNode(node: ListNode<T>) {
     this.head = node;
     this.tail = node;
@@ -139,6 +159,7 @@ export class LinkedList<T> {
       throw new Error(`Index out of bounds! Must be between 0 and ${max}`);
     }
   }
+
   private throwOnEmpty() {
     if (this.isEmpty()) throw new Error("List is Empty");
   }
