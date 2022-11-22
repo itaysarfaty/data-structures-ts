@@ -65,6 +65,22 @@ export class LinkedList<T> {
     this.size--;
   }
 
+  // Find all index's of data
+  public search(data: T) {
+    this.throwOnEmpty();
+    const foundIndex = [];
+    // Setup linked list with head and check data
+    let node = this.head!;
+    if (node.data == data) foundIndex.push(0);
+
+    // Check rest of list
+    for (let i = 1; i < this.size; i++) {
+      if (node.data == data) foundIndex.push(0);
+    }
+
+    return foundIndex;
+  }
+
   // Print out all nodes
   public toString() {
     if (this.isEmpty()) {
