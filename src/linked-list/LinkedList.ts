@@ -1,10 +1,10 @@
 import { ListNode } from "./ListNode";
 export class LinkedList<T> {
-  private size = 0;
+  private length = 0;
   private head: ListNode<T> | null;
   private tail: ListNode<T> | null;
   private get tailIndex() {
-    return this.isEmpty() ? 0 : this.size - 1;
+    return this.isEmpty() ? 0 : this.size() - 1;
   }
 
   constructor() {
@@ -12,9 +12,12 @@ export class LinkedList<T> {
     this.tail = null;
   }
 
+  public size() {
+    return this.length;
+  }
   // Check if empty Returns: Boolean
   public isEmpty() {
-    return this.size === 0;
+    return this.size() === 0;
   }
 
   // Create and add node to the tail
@@ -25,7 +28,7 @@ export class LinkedList<T> {
 
   // Create and add node at index
   public insert(data: T, index: number) {
-    this.validateIndex(index, 0, this.size);
+    this.validateIndex(index, 0, this.size());
 
     const newNode = this.genNode(data);
 
@@ -33,7 +36,7 @@ export class LinkedList<T> {
       this.addHead(newNode);
       return;
     }
-    if (index === this.size) {
+    if (index === this.size()) {
       this.addTail(newNode);
       return;
     }
@@ -42,7 +45,7 @@ export class LinkedList<T> {
     prev.next = newNode;
     newNode.next = node;
 
-    this.size++;
+    this.length++;
   }
 
   // Remove node at index
@@ -62,7 +65,17 @@ export class LinkedList<T> {
     const [prev, node] = this.getNodeWithPrev(index);
     prev.next = node.next;
 
-    this.size--;
+    this.length--;
+  }
+
+  public peekHead() {
+    this.throwOnEmpty();
+    return this.head!.data;
+  }
+
+  public peekTail() {
+    this.throwOnEmpty();
+    return this.tail!.data;
   }
 
   // Find all index's of data
@@ -74,7 +87,7 @@ export class LinkedList<T> {
     if (node.data == data) foundIndex.push(0);
 
     // Check rest of list
-    for (let i = 1; i < this.size; i++) {
+    for (let i = 1; i < this.size(); i++) {
       if (node.data == data) foundIndex.push(0);
     }
 
@@ -91,7 +104,7 @@ export class LinkedList<T> {
     let node = this.head!;
     returnString += `[${node.data}]`;
 
-    for (let i = 1; i < this.size; i++) {
+    for (let i = 1; i < this.size(); i++) {
       node = node.next!;
       returnString += `  ${i}:[${node.data}]`;
     }
@@ -107,7 +120,7 @@ export class LinkedList<T> {
       node.next = this.head;
       node.next;
     }
-    this.size++;
+    this.length++;
   }
   // Add node to tail
   private addTail(node: ListNode<T>) {
@@ -117,21 +130,25 @@ export class LinkedList<T> {
       this.tail!.next = node;
       this.tail = node;
     }
-    this.size++;
+    this.length++;
   }
 
   // Remove node at head
   private removeHead() {
     this.throwOnEmpty();
 
-    if (this.head?.next) {
-      this.head = this.head.next;
+    const oldHead = this.head!;
+
+    if (oldHead.next) {
+      this.head = oldHead.next;
     } else {
       this.head = null;
       this.tail = null;
     }
 
-    this.size--;
+    this.length--;
+
+    return oldHead.data;
   }
 
   // Remove node at tail
@@ -141,7 +158,7 @@ export class LinkedList<T> {
     prev.next = null;
     this.tail = prev;
 
-    this.size--;
+    this.length--;
   }
 
   // Return tuple with node at index and previous node
