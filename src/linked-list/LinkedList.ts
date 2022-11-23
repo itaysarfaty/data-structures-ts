@@ -53,19 +53,19 @@ export class LinkedList<T> {
     this.validateIndex(index, 0, this.tailIndex);
 
     if (index === 0) {
-      this.removeHead();
-      return;
+      return this.removeHead();
     }
 
     if (index === this.tailIndex) {
-      this.removeTail();
-      return;
+      return this.removeTail();
     }
 
     const [prev, node] = this.getNodeWithPrev(index);
     prev.next = node.next;
 
     this.length--;
+
+    return node.data;
   }
 
   public peekHead() {
@@ -154,11 +154,15 @@ export class LinkedList<T> {
   // Remove node at tail
   private removeTail() {
     this.throwOnEmpty();
+
     const [prev, _] = this.getNodeWithPrev(this.tailIndex);
+    const oldTail = prev.next!;
+
     prev.next = null;
     this.tail = prev;
 
     this.length--;
+    return oldTail.data;
   }
 
   // Return tuple with node at index and previous node
