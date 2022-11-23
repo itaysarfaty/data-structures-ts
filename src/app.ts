@@ -1,14 +1,12 @@
-import { Stack } from "./stack/Stack";
+import { Heap } from "./heap/Heap";
 
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(2);
-stack.pop();
-stack.push(1);
-stack.peek();
-const search = stack.search(1);
-const string = stack.toString();
+const maxHeap = (parent: number, child: number) => {
+  return parent > child;
+};
+const heap = new Heap<number>(maxHeap);
 
-console.log(search);
-console.log(string);
+heap.add(5);
+heap.add(3);
+heap.add(2);
+
+const string = heap.toString();
