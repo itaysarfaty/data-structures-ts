@@ -8,5 +8,3 @@ const heap = new Heap<number>(maxHeap);
 heap.add(5);
 heap.add(3);
 heap.add(2);
-
-const string = heap.toString();

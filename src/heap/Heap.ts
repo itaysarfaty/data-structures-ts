@@ -19,7 +19,7 @@ export class Heap<T> extends BinaryTree<T> {
 
   public add(data: T) {
     this.tree.push(data);
-    this.heapifyUp();
+    return this.heapifyUp();
   }
 
   public poll() {
@@ -38,6 +38,8 @@ export class Heap<T> extends BinaryTree<T> {
       swap(this.tree, parentIndex, index);
       this.heapifyUp(parentIndex);
     }
+
+    return index;
   }
 
   private heapifyDown(index: number = 0) {

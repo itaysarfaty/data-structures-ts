@@ -12,10 +12,6 @@ export class BinaryTree<T> {
     return this.size() === 0;
   }
 
-  public toString() {
-    return "[ " + this.tree.toString() + " ]";
-  }
-
   protected parent(index: number) {
     const parentIndex = this.getParentIndex(index);
     return parentIndex !== null ? this.tree[parentIndex] : null;
